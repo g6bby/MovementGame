@@ -9,12 +9,9 @@ public class PlayerMovement : MonoBehaviour
     public float groundDrag;
 
     public float jumpForce;
-    public float jumpCooldown;
     public float airMultiplier;
-    bool readyToJump;
-
-    [Header("Keybinds")]
-    public KeyCode jumpKey = KeyCode.Space;
+    private bool doubleJump;
+ 
 
     public Transform orientation;
 
@@ -33,8 +30,6 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        readyToJump = true;
-
     }
 
 
@@ -52,6 +47,25 @@ public class PlayerMovement : MonoBehaviour
         else
             rb.drag = 0;
 
+        //jump + double jump
+        if (grounded && !Input.GetKey(KeyCode.Space))
+        {
+            doubleJump = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (grounded || doubleJump)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+
+                doubleJump = !doubleJump;
+            }
+            if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.5f);
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -63,16 +77,6 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-
-        //when to jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-            readyToJump = false;
-
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
     }
 
     private void MovePlayer()
@@ -101,16 +105,4 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Jump()
-    {
-        //reset y velocity
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }
-
-    private void ResetJump()
-    {
-        readyToJump = true;
-    }
 }
