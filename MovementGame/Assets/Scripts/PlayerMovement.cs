@@ -7,10 +7,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed;
     public float groundDrag;
+    public float maxSpeed;
 
     public float jumpForce;
     public float airMultiplier;
     private bool doubleJump;
+
+    public float gravityScale;
+    //bool readyToJump;
+
+    public float shiftWalk;
  
 
     public Transform orientation;
@@ -24,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
     public float playerHeight;
     public LayerMask isGround;
     bool grounded;
+
+    [Header("Keybinds")]
+    public KeyCode jumpKey = KeyCode.Space;
 
     // Start is called before the first frame update
     void Start()
@@ -57,15 +66,26 @@ public class PlayerMovement : MonoBehaviour
         {
             if (grounded || doubleJump)
             {
-                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+                rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
                 doubleJump = !doubleJump;
             }
+
             if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
             {
-                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.5f);
+                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.2f);
             }
         }
+
+        //shift to walk
+        if (grounded && Input.GetKey(KeyCode.LeftShift))
+        {
+            rb.velocity = new Vector3(rb.velocity.x, shiftWalk);
+        }
+
+        
     }
 
     private void FixedUpdate()
@@ -91,17 +111,24 @@ public class PlayerMovement : MonoBehaviour
         //in air
         else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+
+        //jump fall
+        if (!grounded)
+        {
+            rb.AddForce(Physics.gravity * (gravityScale - 1) * rb.mass);
+
+        }
     }
 
     private void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         //velocity limit if needed
-        if (flatVel.magnitude > moveSpeed)
+        if (flatVel.magnitude > maxSpeed)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, rb.velocity.z);
+            Vector3 limitedVel = flatVel.normalized * maxSpeed;
+            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
 
