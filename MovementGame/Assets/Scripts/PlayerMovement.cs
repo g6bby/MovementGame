@@ -80,10 +80,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //shift to walk
-        if (grounded && Input.GetKey(KeyCode.LeftShift))
-        {
-            rb.velocity = new Vector3(rb.velocity.x, shiftWalk);
-        }
+        //if (grounded && Input.GetKey(KeyCode.LeftShift))
+        //{
+        //    rb.velocity = new Vector3(rb.velocity.x, shiftWalk);
+        //}
 
         
     }

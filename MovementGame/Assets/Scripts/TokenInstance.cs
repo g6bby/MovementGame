@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TokenInstance : MonoBehaviour
 {
+    public AudioSource fishSound;
+
     private void OnTriggerEnter(Collider other)
     {
         PlayerInventory playerInventory = other.GetComponent<PlayerInventory>();
@@ -11,6 +13,7 @@ public class TokenInstance : MonoBehaviour
         if (playerInventory != null)
         {
             playerInventory.FishCollected();
+            fishSound.Play();
             gameObject.SetActive(false);
         }
     }
