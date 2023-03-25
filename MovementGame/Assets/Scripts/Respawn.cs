@@ -8,16 +8,13 @@ public class Respawn : MonoBehaviour
 
     private Transform spawnPoint;
     private Transform playerPos;
-    //private GameObject[] fishObj;
 
-   public PlayerInventory playerInventory;
 
     private void Start()
     {
 
         spawnPoint = GameObject.FindGameObjectWithTag("Respawn").transform;
         playerPos = GameObject.FindGameObjectWithTag("Player").transform;
-        //fishObj = GameObject.FindGameObjectsWithTag("Fish");
 
     }
 
@@ -32,12 +29,5 @@ public class Respawn : MonoBehaviour
         }
     }   
 
-    //private void OnTriggerEnter(Collider col)
-    //{
-    //    if (col.gameObject.tag == ("Enemy"))
-    //    {
-    //        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    //    }
-    //}
 
 }

@@ -7,6 +7,9 @@ TagManager:
   - Enemy
   - Fish
   - Audio
+  - Respawn2
+  - Enemy2
+  - Igloo
   layers:
   - Default
   - TransparentFX
