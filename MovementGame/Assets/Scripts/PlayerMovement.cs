@@ -17,7 +17,10 @@ public class PlayerMovement : MonoBehaviour
     //bool readyToJump;
 
     public float shiftWalk;
- 
+
+    //animation
+    Animator m_Animator;
+    bool isJumping;
 
     public Transform orientation;
 
@@ -39,6 +42,9 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        m_Animator = gameObject.GetComponent<Animator>();
+        isJumping = false;
     }
 
 
@@ -60,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
         if (grounded && !Input.GetKey(KeyCode.Space))
         {
             doubleJump = false;
+            isJumping = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -71,12 +78,24 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
                 doubleJump = !doubleJump;
+
+                isJumping = true;
             }
 
             if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
             {
                 rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.2f);
+                isJumping = true;
             }
+
+            if (isJumping == false) 
+                m_Animator.SetBool("Jump", false);
+            
+
+            if (isJumping == true) 
+                m_Animator.SetBool("Jump", true);
+            
+
         }
 
         //shift to walk
